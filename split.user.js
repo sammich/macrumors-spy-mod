@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.3
+// @version      0.4
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -20,6 +20,7 @@ var styl = document.createElement('style');
 
 var fadeInTimeMs = 300;
 styl.textContent =
+    '.itemCount { top:23px; } ' +
     '#threadbox { position:relative }' +
     '.pageWidth {max-width: 94% !important;}' +
     '#spymod_col2 .header {line-height:38px;text-align:center;} ' +
