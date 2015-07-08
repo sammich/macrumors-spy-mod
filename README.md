@@ -1,4 +1,4 @@
-## New MR Spy Modifier ##
+## Macrumors Forum Spy Mod ##
 
 First off, I love the new forums that Arn and the team have put up. Vast improvement. And I'm also thankful that the Spy wasn't a porting afterthought and left for later to be released.
 
