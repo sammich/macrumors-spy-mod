@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.5
+// @version      0.5.1
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -237,8 +237,7 @@ function _runSuperMod() {
             target = $(this).find('.info .whoWhere a')[0];
         }
 
-        frame.src =
-        window.openthread = target.href;
+        frame.src = window.openthread = target.href;
 
         var threadname = $(target).find('a').remove().end();
         var opt = $('<option>'+threadname[0].textContent+'</option>')
@@ -248,6 +247,8 @@ function _runSuperMod() {
 
         $('#threadselector').append(opt);
         opt.prop('selected', true);
+
+        return false;
     });
 
     $('#threadselector').off('change').change(function () {
