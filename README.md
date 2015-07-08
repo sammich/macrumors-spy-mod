@@ -4,7 +4,7 @@ First off, I love the new forums that Arn and the team have put up. Vast improve
 
 But I still have some suggestions that would make the Spy better. And most, if not all, of the suggestions are implemented in the attached UserScript newspy.user.js attached here.
 
-The mod is made as the MR Spy was at 2015-06-23 0030 (AEST).
+The mod is made as the MR Spy was at 2015-07-09 0030 (AEST).
 
 I 'built' and tested it on Chrome via the Tampermonkey extension. There's no reason why other UserScript extensions or Firefox won't be able to handle this either.
 
@@ -17,6 +17,8 @@ I 'built' and tested it on Chrome via the Tampermonkey extension. There's no rea
     - changed the initial post set loading mechanism, it's less stuttery and fades in!
 - 2015-07-05
     - added a right-aligned mode
+- 2015-07-09
+    - added a split-view mode (only run one script at a time)
 
 ## Modifications ##
 
@@ -39,7 +41,7 @@ I 'built' and tested it on Chrome via the Tampermonkey extension. There's no rea
         - add [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) to Chrome
     - Firefox
         - install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
-2. Click on 'raw' for the file '[newspy.user.js](https://gist.github.com/sammich/383a85b301bef328fd87/raw/35dc46f1810077c274518d2d6f6c97130879bc48/newspy.user.js)' (or click the link)
+2. Click on 'raw' for the file '[enhanced.user.js](https://github.com/sammich/macrumors-spy-mod/raw/master/enhanced.user.js)' (or click the link)
 3. Click on the 'Install' button
 4. Refresh [MR Spy](http://forums.macrumors.com/spy/)
 5. Enjoy!
