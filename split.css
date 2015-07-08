@@ -177,7 +177,11 @@ body > * {
 		}
 }
 
-#ignoreForums textarea {
+#ignoreForums {
+	padding:4px;
+}
+
+ignoreForums
 		border-radius: 4px;
 		border: 1px solid rgb(198, 207, 220);
 		padding: 3px;

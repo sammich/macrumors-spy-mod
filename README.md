@@ -31,6 +31,7 @@ I 'built' and tested it on Chrome via the Tampermonkey extension. There's no rea
 - new threads will get a green tag next to the thread title
 - first batch of posts won't slide in one by one - they fade in all at once
 - added in a right-aligned mode (checkbox below ignore forum text input, bottom of page)
+- added a separate script for a split screen view
 
 ## Installation ##
 
@@ -41,7 +42,7 @@ I 'built' and tested it on Chrome via the Tampermonkey extension. There's no rea
         - add [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) to Chrome
     - Firefox
         - install [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/)
-2. Click on 'raw' for the file '[enhanced.user.js](https://github.com/sammich/macrumors-spy-mod/raw/master/enhanced.user.js)' (or click the link)
+2. Click on this link '[enhanced.user.js](https://github.com/sammich/macrumors-spy-mod/raw/master/enhanced.user.js)' (or click the link)
 3. Click on the 'Install' button
 4. Refresh [MR Spy](http://forums.macrumors.com/spy/)
 5. Enjoy!
