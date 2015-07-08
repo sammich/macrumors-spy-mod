@@ -1,3 +1,7 @@
+#spyContents .location .major {
+		font-size: smaller;
+}
+
 .mod_extras span,
 .mod_extras label {
 		color: rgb(115, 126, 136);
