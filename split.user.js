@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.5.2
+// @version      0.5.3
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
 
 /*
    Doco is all at the link here:
-   https://gist.github.com/sammich/383a85b301bef328fd87
+   https://github.com/sammich/macrumors-spy-mod/
 
    Notes:
     - localStorage is assumed
@@ -20,11 +20,11 @@ var styl = document.createElement('style');
 
 var fadeInTimeMs = 300;
 styl.textContent =
-
+    '.threadLoaded .meta:before {content: \'• \';color: #04c646}' +
     'span.meta:after {content: \'›\';font-size: 20px;position: absolute;top: -6px;right: -5px;}' +
     '#spyContents .discussionListItems .itemWrapper .snippet {font-family:inherit;color: #999;font-style:normal; }' +
     '.discussionListItem:hover {background-color: #F7FBFD;cursor: pointer;}' +
-    '#threadbox { position:relative }' +
+    '#threadbox { position:relative;margin-left:1px; }' +
     '.pageWidth {max-width: 94% !important;}' +
     '#spymod_col2 .header {line-height:38px;text-align:center;} ' +
     '#spyContents { border-right: 0;padding:0; }#spyContents .sectionHeaders { display:none;}.discussionListItem { border-left:none !important;border-right:none !important}.discussionListItem .listBlock {width: 100%;box-sizing: border-box;display:block; border-right:none}' +
@@ -228,9 +228,11 @@ function _runSuperMod() {
         $('#messageoption').text('- switch between your opened threads -');
         $('#startermessage').fadeOut()
 
-        e.preventDefault()
+        e.preventDefault();
 
         frame.style.display = 'block';
+
+        $(this).closest('.discussionListItem').addClass('threadLoaded');
 
         var target = e.target;
         if ($(this).is('.discussionListItem')) {
