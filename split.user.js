@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.6.1
+// @version      0.7
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -20,19 +20,21 @@ var styl = document.createElement('style');
 
 var fadeInTimeMs = 300;
 styl.textContent =
+    '#logo {padding: 0px 10px !important;height: 48px;line-height: 48px;background-color: transparent !important;} #logo img {height:31px} ' +
+    '.itemCount { margin-top:33px; } .itemCount .arrow { display:none; }' +
     '.threadLoaded .meta:before {content: \'• \';color: #04c646}' +
     'span.meta:after {content: \'›\';font-size: 20px;position: absolute;top: -6px;right: -5px;}' +
     '#spyContents .discussionListItems .itemWrapper .snippet {font-family:inherit;color: #999;font-style:normal; }' +
     '.discussionListItem:hover {background-color: #F7FBFD;cursor: pointer;}' +
-    '#threadbox { position:relative;margin-left:1px; }' +
+    '#threadbox { position:relative;margin-left:0px; }' +
     '.pageWidth {max-width: 94% !important;}' +
     '#spymod_col2 .header {line-height:38px;text-align:center;} ' +
     '#spyContents { border-right: 0;padding:0; }#spyContents .sectionHeaders { display:none;}.discussionListItem { border-left:none !important;border-right:none !important}.discussionListItem .listBlock {width: 100%;box-sizing: border-box;display:block; border-right:none}' +
-    '#header .navigation .primary .navTabs .navTab, #header .navigation .primary .navTabs .navLink, #header .navigation .primary .navTabs {height:40px;}' +
+    //'#header .navigation .primary .navTabs .navTab, #header .navigation .primary .navTabs .navLink, #header .navigation .primary .navTabs {height:40px;}' +
     '#header, #header *{ box-shadow: none !important; } #header .navigation { margin:0 } #header .navigation .navTab { height:40px; }' +
-    '#header .funbox, #header .brand , #header .secondary, #header .desktop, #header .mobile{display:none !important;}.sectionMain{border:none}' +
+    '#header .funbox, #header .brand, #header .mobile{display:none !important;}.sectionMain{border:none}' +
     'body > * {display:none;}' +
-    '#mainview {display: flex;display: -webkit-flex; overflow: hidden;}#spymod_col1 {width: 30%;min-width:250px;max-width:400px;border-right: 1px solid rgb(147, 166, 194);}#spymod_col2 {flex: auto;-webkit-flex: auto;}#mainview .header {height: 40px;width: 100%;background-color: #c6d5e8;border-bottom: 1px solid rgb(147, 166, 194);}#threadselector { width: 96%%;}#threadframe { display:none;border: none;width: 100%;height: 100%;}' +
+    '#mainview {border-top: 1px solid rgb(147, 166, 194);display: flex;display: -webkit-flex; overflow: hidden;}#spymod_col1 {width: 30%;min-width:250px;max-width:400px;border-right: 1px solid rgb(147, 166, 194);}#spymod_col2 {flex: auto;-webkit-flex: auto;}#mainview .header {height: 40px;width: 100%;background-color: #c6d5e8;border-bottom: 1px solid rgb(147, 166, 194);}#threadselector { width: 96%%;}#threadframe { display:none;border: none;width: 100%;height: 100%;}' +
     '#spyContents .location .major {font-size: smaller;}' +
     '.mod_extras span, .mod_extras label {color: rgb(115, 126, 136);font-size: 12px;margin-left: 6px;}' +
     '.itemWrapper.firstBatch {visibility: hidden;opacity: 0;-webkit-transition: opacity '+fadeInTimeMs+'ms ease-out;-moz-transition: opacity '+fadeInTimeMs+'ms ease-out;-o-transition: opacity '+fadeInTimeMs+'ms ease-out;transition: opacity '+fadeInTimeMs+'ms ease-out;}.itemWrapper.show {opacity: 1;visibility: visible;}' +
@@ -63,22 +65,8 @@ function spyInsert () {
     // if it's the user highlight it with a feint green
     user === window.spymod_username && tempEl.addClass('loggedInUserPost');
 
-    if (!window.spymod_rightMode) {
-
-      // add the new tag for the timestamp of the post
-      tempEl.find('.location .whoWhere').prepend('<span class="meta">' + time + '</span>');
-    } else {
-      tempEl.find('.info .whoWhere').prepend('<span class="meta">' + time + '</span>');
-
-      var snip = tempEl.find('.listBlock.location');
-      tempEl.find('.info').after(snip);
-
-      snip = tempEl.find('.listBlock.location .major');
-      tempEl.find('.listBlock.location .whoWhere').prepend(snip);
-
-      //snip = tempEl.find('.listBlock.info .snippet');
-      //snip.prev().before(snip);
-    }
+    // add the new tag for the timestamp of the post
+    tempEl.find('.location .whoWhere').prepend('<span class="meta">' + time + '</span>');
 
     // don't return anything if the post isn't to be shown anyway
     return ignore ? null : tempEl;
@@ -135,10 +123,7 @@ function _runSpyMod() {
   $('#spyContents').after(
 
     // ignore forums input
-    '<div id="ignoreForums"><span>Ignore Forums (separate with semi-colons):</span><textarea placeholder="Forum 1;Forum 2"></textarea></div>' +
-
-    // right-mode spy
-    '<div class="mod_extras"><input type="checkbox" id="spymod_rightmode"><label for="spymod_rightmode">Right-aligned mode (reload page after setting)</label></div>'
+    '<div id="ignoreForums"><span>Ignore Forums (separate with semi-colons):</span><textarea placeholder="Forum 1;Forum 2"></textarea></div>'
   )
 
   // note that LS returns a string not the bool. Any truthy value is true
@@ -194,16 +179,25 @@ function _runSpyMod() {
 }
 
 function _runSuperMod() {
-    $('body').append('<div id="mainview"> <div id="spymod_col1"> <div class="header"></div> <div id="postslist" style="overflow: scroll;"></div> </div> <div id="spymod_col2"> <div class="header"><select id="threadselector"><option id="messageoption" disabled>- Select a thread to begin -</option></select></div> <div id="threadbox"><div id="startermessage" style="padding:5em;box-sizing:border-box;text-align:center;position:absolute;width:100%">To start, click a thread to the left.</div><iframe src="" frameborder="0" id="threadframe"></iframe></div> </div> </div>');
+    $('body').append('<div id="mainview"> <div id="spymod_col1"> <div id="postslist" style="overflow: scroll;"></div> </div> <div id="spymod_col2"> <div class="header"><select id="threadselector"><option id="messageoption" disabled>- Select a thread to begin -</option></select></div> <div id="threadbox"><div id="startermessage" style="padding:5em;box-sizing:border-box;text-align:center;position:absolute;width:100%">To start, click a thread to the left.</div><iframe src="" frameborder="0" id="threadframe"></iframe></div> </div> </div>');
     $('#postslist').append($('#spyContents').parent())
+
+    a = $('#logo')
+    a.find('img').removeAttr('width').removeAttr('height')
+    $('#header').find('ul.desktop').prepend('<li>'+a[0].outerHTML+'</li>')
+
     window.spymod_userpopups = $('#AccountMenu').add('#AlertsMenu').add('#ConversationsMenu');
 
     window.onresize = function () {
-        window.mainview.style.height = window.innerHeight + 'px'
-        window.threadbox.style.height = (window.innerHeight-40)+ 'px'
-        window.postslist.style.height = (window.innerHeight-40)+ 'px'
+        var boxTop = window.innerHeight-mainview.getBoundingClientRect().top;
+        window.mainview.style.height = (boxTop-1) + 'px'
+        window.threadbox.style.height = (boxTop-40)+ 'px'
+        window.postslist.style.height = (boxTop-1) + 'px'
     }
     window.onresize();
+    setTimeout(function () {
+        window.onresize();
+    }, 10);
 
     function runInFrame() {
         $('body').click(function() {
@@ -216,13 +210,33 @@ function _runSuperMod() {
         window.startermessage.style.display = 'none';
 
         var styl = document.createElement('style');
-        styl.textContent = '#uix_wrapper, .sharePage, .breadBoxBottom, .funbox, footer, .similarThreads  { display:none; }'
+        styl.textContent = '#uix_wrapper, .sharePage, .breadBoxBottom, .funbox, footer, .similarThreads  { display:none; }  body {  background: none !important;}'
         frame.contentDocument.body.appendChild(styl);
 
         var script = document.createElement('script');
         script.textContent = ';(' + runInFrame.toString() + ')()';
         frame.contentDocument.body.appendChild(script);
     }
+
+    $('body').on('click', 'a', function(e) {
+        console.log(this.textContent, this.href);
+        e.preventDefault();
+
+        $('#messageoption').text('- switch between your opened threads -');
+        $('#startermessage').fadeOut()
+
+        frame.style.display = 'block';
+
+        frame.src = window.openthread = this.href;
+        var threadname = this.textContent;
+        var opt = $('<option>'+threadname+'</option>')
+        opt[0].threadname = threadname;
+        opt[0].origin_href = this.href
+        //opt[0].origin_postnum = target.href.match(/\/(.+)\//)[1];
+
+        $('#threadselector').append(opt);
+        opt.prop('selected', true);
+    });
 
     $('#spyContents').off('click').on('click', '.discussionListItem, a', function(e) {
         $('#messageoption').text('- switch between your opened threads -');
@@ -260,7 +274,7 @@ function _runSuperMod() {
         window.openthread = sel.origin_href
     })
 
-    $('#spymod_col1 .header').append($('#header'))
+    $('#header').prependTo('body').show()
 }
 
 var script = document.createElement('script');
