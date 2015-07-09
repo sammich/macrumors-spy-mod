@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.7
+// @version      0.7.1
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -28,13 +28,13 @@ styl.textContent =
     '.discussionListItem:hover {background-color: #F7FBFD;cursor: pointer;}' +
     '#threadbox { position:relative;margin-left:0px; }' +
     '.pageWidth {max-width: 94% !important;}' +
-    '#spymod_col2 .header {line-height:38px;text-align:center;} ' +
+    '#spymod_col2 .header {line-height:28px;text-align:center;} ' +
     '#spyContents { border-right: 0;padding:0; }#spyContents .sectionHeaders { display:none;}.discussionListItem { border-left:none !important;border-right:none !important}.discussionListItem .listBlock {width: 100%;box-sizing: border-box;display:block; border-right:none}' +
     //'#header .navigation .primary .navTabs .navTab, #header .navigation .primary .navTabs .navLink, #header .navigation .primary .navTabs {height:40px;}' +
     '#header, #header *{ box-shadow: none !important; } #header .navigation { margin:0 } #header .navigation .navTab { height:40px; }' +
     '#header .funbox, #header .brand, #header .mobile{display:none !important;}.sectionMain{border:none}' +
     'body > * {display:none;}' +
-    '#mainview {border-top: 1px solid rgb(147, 166, 194);display: flex;display: -webkit-flex; overflow: hidden;}#spymod_col1 {width: 30%;min-width:250px;max-width:400px;border-right: 1px solid rgb(147, 166, 194);}#spymod_col2 {flex: auto;-webkit-flex: auto;}#mainview .header {height: 40px;width: 100%;background-color: #c6d5e8;border-bottom: 1px solid rgb(147, 166, 194);}#threadselector { width: 96%%;}#threadframe { display:none;border: none;width: 100%;height: 100%;}' +
+    '#mainview {border-top: 1px solid rgb(147, 166, 194);display: flex;display: -webkit-flex; overflow: hidden;}#spymod_col1 {width: 30%;min-width:250px;max-width:400px;border-right: 1px solid rgb(147, 166, 194);}#spymod_col2 {flex: auto;-webkit-flex: auto;}#mainview .header {height: 30px;width: 100%;background-color: #c6d5e8;border-bottom: 1px solid rgb(147, 166, 194);}#threadselector { width: 96%%;}#threadframe { display:none;border: none;width: 100%;height: 100%;}' +
     '#spyContents .location .major {font-size: smaller;}' +
     '.mod_extras span, .mod_extras label {color: rgb(115, 126, 136);font-size: 12px;margin-left: 6px;}' +
     '.itemWrapper.firstBatch {visibility: hidden;opacity: 0;-webkit-transition: opacity '+fadeInTimeMs+'ms ease-out;-moz-transition: opacity '+fadeInTimeMs+'ms ease-out;-o-transition: opacity '+fadeInTimeMs+'ms ease-out;transition: opacity '+fadeInTimeMs+'ms ease-out;}.itemWrapper.show {opacity: 1;visibility: visible;}' +
@@ -191,7 +191,7 @@ function _runSuperMod() {
     window.onresize = function () {
         var boxTop = window.innerHeight-mainview.getBoundingClientRect().top;
         window.mainview.style.height = (boxTop-1) + 'px'
-        window.threadbox.style.height = (boxTop-40)+ 'px'
+        window.threadbox.style.height = (boxTop-31)+ 'px'
         window.postslist.style.height = (boxTop-1) + 'px'
     }
     window.onresize();
