@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.5.3
+// @version      0.6
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
