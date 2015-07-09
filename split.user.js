@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.5.1
+// @version      0.5.2
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -32,7 +32,7 @@ styl.textContent =
     '#header, #header *{ box-shadow: none !important; } #header .navigation { margin:0 } #header .navigation .navTab { height:40px; }' +
     '#header .funbox, #header .brand , #header .secondary, #header .desktop, #header .mobile{display:none !important;}.sectionMain{border:none}' +
     'body > * {display:none;}' +
-    '#mainview {display: flex; overflow: hidden;}#spymod_col1 {width: 400px;border-right: 1px solid rgb(147, 166, 194);}#spymod_col2 {flex: auto; flex-direction: column}#mainview .header {height: 40px;width: 100%;background-color: #c6d5e8;border-bottom: 1px solid rgb(147, 166, 194);}#threadselector { width: 96%%;}#threadframe { display:none;border: none;width: 100%;height: 100%;}' +
+    '#mainview {display: flex; overflow: hidden;}#spymod_col1 {width: 30%;min-width:250px;max-width:400px;border-right: 1px solid rgb(147, 166, 194);}#spymod_col2 {flex: auto; flex-direction: column}#mainview .header {height: 40px;width: 100%;background-color: #c6d5e8;border-bottom: 1px solid rgb(147, 166, 194);}#threadselector { width: 96%%;}#threadframe { display:none;border: none;width: 100%;height: 100%;}' +
     '#spyContents .location .major {font-size: smaller;}' +
     '.mod_extras span, .mod_extras label {color: rgb(115, 126, 136);font-size: 12px;margin-left: 6px;}' +
     '.itemWrapper.firstBatch {visibility: hidden;opacity: 0;-webkit-transition: opacity '+fadeInTimeMs+'ms ease-out;-moz-transition: opacity '+fadeInTimeMs+'ms ease-out;-o-transition: opacity '+fadeInTimeMs+'ms ease-out;transition: opacity '+fadeInTimeMs+'ms ease-out;}.itemWrapper.show {opacity: 1;visibility: visible;}' +
