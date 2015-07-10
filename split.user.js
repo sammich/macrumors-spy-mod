@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.7.1
+// @version      0.7.2
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -20,6 +20,8 @@ var styl = document.createElement('style');
 
 var fadeInTimeMs = 300;
 styl.textContent =
+    'div#navigation {border-bottom: 1px solid rgb(147, 166, 194);}.secondary.roundups {position: absolute !important;top: 48px;display: none;}' +
+    '.primary:hover + .secondary, .secondary:hover {display: block !important;}' +
     '#logo {padding: 0px 10px !important;height: 48px;line-height: 48px;background-color: transparent !important;} #logo img {height:31px} ' +
     '.itemCount { margin-top:33px; } .itemCount .arrow { display:none; }' +
     '.threadLoaded .meta:before {content: \'• \';color: #04c646}' +
@@ -34,7 +36,7 @@ styl.textContent =
     '#header, #header *{ box-shadow: none !important; } #header .navigation { margin:0 } #header .navigation .navTab { height:40px; }' +
     '#header .funbox, #header .brand, #header .mobile{display:none !important;}.sectionMain{border:none}' +
     'body > * {display:none;}' +
-    '#mainview {border-top: 1px solid rgb(147, 166, 194);display: flex;display: -webkit-flex; overflow: hidden;}#spymod_col1 {width: 30%;min-width:250px;max-width:400px;border-right: 1px solid rgb(147, 166, 194);}#spymod_col2 {flex: auto;-webkit-flex: auto;}#mainview .header {height: 30px;width: 100%;background-color: #c6d5e8;border-bottom: 1px solid rgb(147, 166, 194);}#threadselector { width: 96%%;}#threadframe { display:none;border: none;width: 100%;height: 100%;}' +
+    '#mainview {border-top: 1px solid rgb(147, 166, 194);display: flex;display: -webkit-flex; overflow: hidden;}#spymod_col1 {width: 30%;min-width:250px;max-width:400px;border-right: 1px solid rgb(147, 166, 194);}#spymod_col2 {flex: auto;-webkit-flex: auto;}#mainview .header {height: 30px;width: 100%;background-color: #c6d5e8;border-bottom: 1px solid rgb(147, 166, 194);}#threadselector { width: 90%;}#threadframe { display:none;border: none;width: 100%;height: 100%;}' +
     '#spyContents .location .major {font-size: smaller;}' +
     '.mod_extras span, .mod_extras label {color: rgb(115, 126, 136);font-size: 12px;margin-left: 6px;}' +
     '.itemWrapper.firstBatch {visibility: hidden;opacity: 0;-webkit-transition: opacity '+fadeInTimeMs+'ms ease-out;-moz-transition: opacity '+fadeInTimeMs+'ms ease-out;-o-transition: opacity '+fadeInTimeMs+'ms ease-out;transition: opacity '+fadeInTimeMs+'ms ease-out;}.itemWrapper.show {opacity: 1;visibility: visible;}' +
@@ -179,7 +181,7 @@ function _runSpyMod() {
 }
 
 function _runSuperMod() {
-    $('body').append('<div id="mainview"> <div id="spymod_col1"> <div id="postslist" style="overflow: scroll;"></div> </div> <div id="spymod_col2"> <div class="header"><select id="threadselector"><option id="messageoption" disabled>- Select a thread to begin -</option></select></div> <div id="threadbox"><div id="startermessage" style="padding:5em;box-sizing:border-box;text-align:center;position:absolute;width:100%">To start, click a thread to the left.</div><iframe src="" frameborder="0" id="threadframe"></iframe></div> </div> </div>');
+    $('body').append('<div id="mainview"> <div id="spymod_col1"> <div id="postslist" style="overflow: scroll;"></div> </div> <div id="spymod_col2"> <div class="header"><select id="threadselector"><option id="messageoption" disabled>- Select a thread to begin -</option></select> <button id="refreshFrame">Refresh</button></div> <div id="threadbox"><div id="startermessage" style="padding:5em;box-sizing:border-box;text-align:center;position:absolute;width:100%">To start, click a thread to the left.</div><iframe src="" frameborder="0" id="threadframe"></iframe></div> </div> </div>');
     $('#postslist').append($('#spyContents').parent())
 
     a = $('#logo')
@@ -209,6 +211,14 @@ function _runSuperMod() {
     frame.onload = function () {
         window.startermessage.style.display = 'none';
 
+        var opt = $('#threadselector').find(':selected');
+        var title = frame.contentDocument.title;
+        opt.text(title);
+        
+        window.openthread = frame.contentWindow.location.href;
+        opt[0].origin_href = window.openthread
+        opt[0].threadname = title
+        
         var styl = document.createElement('style');
         styl.textContent = '#uix_wrapper, .sharePage, .breadBoxBottom, .funbox, footer, .similarThreads  { display:none; }  body {  background: none !important;}'
         frame.contentDocument.body.appendChild(styl);
@@ -217,9 +227,12 @@ function _runSuperMod() {
         script.textContent = ';(' + runInFrame.toString() + ')()';
         frame.contentDocument.body.appendChild(script);
     }
+    
+    $('#refreshFrame').click(function() {
+       frame.contentWindow.location.reload(true);
+    });
 
     $('body').on('click', 'a', function(e) {
-        console.log(this.textContent, this.href);
         e.preventDefault();
 
         $('#messageoption').text('- switch between your opened threads -');
