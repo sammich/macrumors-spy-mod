@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Opinionated Improvement to MR Spy EXTRA!!!
+// @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.8.0
+// @version      0.8.1
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -151,7 +151,7 @@ function _runSpyMod() {
       'You can read more about this mod <a class="doNotCapture" href="https://github.com/sammich/macrumors-spy-mod">here</a>.<br>' +
 
       'Current version: <span id="spymod_currentVersion"></span>. ' +
-      '<a id="spymod_newVersionAvailable" class="doNotCapture" style="display:none">Update avaiilable</a>.' +
+      '<a id="spymod_newVersionAvailable" class="doNotCapture" style="display:none">Update avaiilable.</a>' +
       '</span>' +
     '</div>'
   )
@@ -401,6 +401,7 @@ script.textContent = spyInsert.toString() + ';(' + _runSuperMod.toString() + ')(
 document.body.appendChild(script);
 
 if (GM_xmlhttpRequest) {
+document.getElementById('spymod_currentVersion').textContent = GM_info.script.version;
 
     // do some version checking
     GM_xmlhttpRequest({
@@ -425,8 +426,6 @@ if (GM_xmlhttpRequest) {
                 toast.querySelector('.versionTarget').href = versionInfo.url;
 
                 localStorage.setItem('spymod_latestVersion', versionInfo.version);
-
-                document.getElementById('spymod_currentVersion').textContent = GM_info.script.version;
 
                 var newVersion = document.getElementById('spymod_newVersionAvailable')
 
