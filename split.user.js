@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.7.2
+// @version      0.7.3
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -21,12 +21,12 @@ var styl = document.createElement('style');
 var fadeInTimeMs = 300;
 styl.textContent =
     'div#navigation {border-bottom: 1px solid rgb(147, 166, 194);}.secondary.roundups {position: absolute !important;top: 48px;display: none;}' +
-    '.primary:hover + .secondary, .secondary:hover {display: block !important;}' +
+    //'.primary:hover + .secondary, .secondary:hover {display: block !important;}' +
     '#logo {padding: 0px 10px !important;height: 48px;line-height: 48px;background-color: transparent !important;} #logo img {height:31px} ' +
     '.itemCount { margin-top:33px; } .itemCount .arrow { display:none; }' +
     '.threadLoaded .meta:before {content: \'• \';color: #04c646}' +
     'span.meta:after {content: \'›\';font-size: 20px;position: absolute;top: -6px;right: -5px;}' +
-    '#spyContents .discussionListItems .itemWrapper .snippet {font-family:inherit;color: #999;font-style:normal; }' +
+    '#spyContents .snippet {font-family:inherit;color: #999;font-style:normal;white-space: nowrap;max-width: 100%;text-overflow: ellipsis;overflow:hidden }' +
     '.discussionListItem:hover {background-color: #F7FBFD;cursor: pointer;}' +
     '#threadbox { position:relative;margin-left:0px; }' +
     '.pageWidth {max-width: 94% !important;}' +
@@ -181,7 +181,10 @@ function _runSpyMod() {
 }
 
 function _runSuperMod() {
-    $('body').append('<div id="mainview"> <div id="spymod_col1"> <div id="postslist" style="overflow: scroll;"></div> </div> <div id="spymod_col2"> <div class="header"><select id="threadselector"><option id="messageoption" disabled>- Select a thread to begin -</option></select> <button id="refreshFrame">Refresh</button></div> <div id="threadbox"><div id="startermessage" style="padding:5em;box-sizing:border-box;text-align:center;position:absolute;width:100%">To start, click a thread to the left.</div><iframe src="" frameborder="0" id="threadframe"></iframe></div> </div> </div>');
+    window.spymod_cachedWindowLoc = window.location + '';
+    window.getSpyItems = function(){$.ajax({url:window.spymod_cachedWindowLoc+"feed?last="+spyHighestId+"&r="+Math.random(),type:"GET",success:function(a){a=$.makeArray(a.feed);$.each(a,function(a,c){$.each(c,function(a,b){0<b.length&&(spyItems.push(b),spyHighestId=Math.max(parseInt(a),spyHighestId))})});spyInsert()}})}
+    
+    $('body').append('<div id="mainview"> <div id="spymod_col1"> <div id="postslist" style="overflow: scroll;"></div> </div> <div id="spymod_col2"> <div class="header"><select id="threadselector"><option id="messageoption" disabled>- select a thread to begin -</option></select> <button id="refreshFrame">Refresh</button></div> <div id="threadbox"><div id="startermessage" style="padding:5em;box-sizing:border-box;text-align:center;position:absolute;width:100%">To start, click a thread to the left.</div><iframe src="" frameborder="0" id="threadframe"></iframe></div> </div> </div>');
     $('#postslist').append($('#spyContents').parent())
 
     a = $('#logo')
@@ -207,6 +210,8 @@ function _runSuperMod() {
         });
     }
 
+    window.spymod_history = [];
+    
     var frame = $('#threadframe')[0];
     frame.onload = function () {
         window.startermessage.style.display = 'none';
@@ -216,6 +221,14 @@ function _runSuperMod() {
         opt.text(title);
         
         window.openthread = frame.contentWindow.location.href;
+        
+        if (window.spymod_poppingStateUrl != window.openthread) {
+            console.info('pushing state', window.openthread)
+            
+            window.history.pushState(null, null, window.openthread);
+        }
+        window.spymod_poppingStateUrl = null;
+        
         opt[0].origin_href = window.openthread
         opt[0].threadname = title
         
@@ -287,7 +300,41 @@ function _runSuperMod() {
         window.openthread = sel.origin_href
     })
 
-    $('#header').prependTo('body').show()
+    
+    var menuHoverOverTimer, menuHoverOutTimer;
+    $('.primary, .secondary').mouseover(function () {
+    	clearTimeout(menuHoverOverTimer)
+    	menuHoverOverTimer = setTimeout(function () {
+    		$('.secondary').fadeIn(100)
+    	}, 200);    	
+    	
+    	clearTimeout(menuHoverOutTimer);
+    })
+    
+    $('#header').mouseout(function () {
+    	menuHoverOutTimer = setTimeout(function () {
+    		$('.secondary').fadeOut(100)
+    	}, 200)
+    	
+    	clearTimeout(menuHoverOverTimer)
+    });
+        
+    $('#header').prependTo('body').show();
+    $('#header .active').removeClass('active');
+    
+    window.onpopstate = function () {
+        $('#threadselector option').map(function () {
+            if (this.origin_href == window.location.href) {
+                $(this).prop('selected', true);
+                
+                console.info('popping state', this.origin_href);
+                
+                window.spymod_poppingStateUrl = this.origin_href
+                
+                $('#threadselector').change();
+            }
+        })
+    }
 }
 
 var script = document.createElement('script');
