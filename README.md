@@ -1,8 +1,9 @@
 ## Macrumors Forum Spy Mod ##
 
-First off, I love the new forums that Arn and the team have put up. Vast improvement. And I'm also thankful that the Spy wasn't a porting afterthought and left for later to be released.
+This userscript enhances the existing spy at the [Macrumors Forum Spy](forums.macrumors.com/spy/). There are two version of the script:
 
-However, I have some suggestions that would make the Spy better. And most, if not all, of the suggestions are implemented in the attached UserScripts in this repository.
+- Enhanced - keeps things mostly the same but adds features like subforum ignore and tidies up things
+- Split - totally wraps up the Spy into a totally contained pro-browsing pseudo-app
 
 The mod is made as the MR Spy was at 2015-07-10 0030 (AEST).
 
