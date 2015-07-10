@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.8.1
+// @version      0.8.2
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -24,7 +24,7 @@ styl.textContent =
     '#refreshFrame { padding: 2px 3px;position: relative;top: 1px; }' +
     '#newVersionMessage { background-color: #eee;font-size:90%;position:absolute; bottom:0; right:0; margin:1em; padding: 4px 7px; border:1px solid #999; border-radius:3px;z-index:10000; }' +
     '.postNew .meta:before {content: \'new \';color: rgb(0, 136, 238);font-size: smaller;font-weight: bold;position: relative;bottom: 2px;}' +
-    'div#navigation {border-bottom: 1px solid rgb(147, 166, 194);}.secondary.roundups {position: absolute !important;top: 48px;display: none;}' +
+    'div#navigation {border-bottom: 1px solid rgb(147, 166, 194);}.secondary {position: absolute !important;top: 48px;display: none;z-index:1000; }' +
     '#logo {padding: 0px 10px !important;height: 48px;line-height: 48px;background-color: transparent !important;} #logo img {height:31px;position:relative;top:-2px;} ' +
     '.itemCount { margin-top:33px; } .itemCount .arrow { display:none; }' +
     '.threadLoaded .meta:before {content: \'• \';color: #04c646}' +
@@ -153,21 +153,18 @@ function _runSpyMod() {
       'Current version: <span id="spymod_currentVersion"></span>. ' +
       '<a id="spymod_newVersionAvailable" class="doNotCapture" style="display:none">Update avaiilable.</a>' +
       '</span>' +
+
+      '<br><br><span>' +
+      '<input type="checkbox" id="spymod_optOutAnonymousTracking"> ' +
+      '<label for="spymod_optOutAnonymousTracking">Opt-out of anonymous tracking</label><br>' +
+      'This mod anonymises your username and sends it to a server to see how many users are using it.' +
+      '<span>' +
     '</div>'
   )
 
-  // note that LS returns a string not the bool. Any truthy value is true
-  window.spymod_rightMode = !!localStorage.getItem('_mod_rightmode');
-
-  $('#spymod_rightmode')
-  .prop('checked', window.spymod_rightMode)
-  .change(function () {
-    if (this.checked) {
-      localStorage.setItem('_mod_rightmode', true);
-    } else {
-      localStorage.removeItem('_mod_rightmode');
-    }
-  });
+  $('#spymod_optOutAnonymousTracking').change(function () {
+        localStorage.setItem('spymod_optOutAnonymousTracking', this.checked)
+  }).prop('checked', localStorage.getItem('spymod_optOutAnonymousTracking') === 'true')
 
   // ignore setup
   var ignored = localStorage.getItem('_mod_ignoredForums') || '';
@@ -437,10 +434,12 @@ document.getElementById('spymod_currentVersion').textContent = GM_info.script.ve
     });
 
     // do some innocent anonymous user logging
-    setTimeout(function() {
-        GM_xmlhttpRequest({
-            method: "GET",
-            url: 'https://pure-woodland-9816.herokuapp.com/' + you.hashCode(),
-        });
-    }, 1000);
+    if (you && localStorage.getItem('spymod_optOutAnonymousTracking') !== 'true') {
+        setTimeout(function() {
+            GM_xmlhttpRequest({
+                method: "GET",
+                url: 'https://pure-woodland-9816.herokuapp.com/' + you.hashCode()
+            });
+        }, 1000);
+    }
 }
