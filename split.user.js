@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy EXTRA!!!
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.7.3
+// @version      0.7.4
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -20,6 +20,7 @@ var styl = document.createElement('style');
 
 var fadeInTimeMs = 300;
 styl.textContent =
+    '.postNew .meta:before {content: \'new \';color: rgb(0, 136, 238);font-size: smaller;font-weight: bold;position: relative;bottom: 2px;}' +
     'div#navigation {border-bottom: 1px solid rgb(147, 166, 194);}.secondary.roundups {position: absolute !important;top: 48px;display: none;}' +
     //'.primary:hover + .secondary, .secondary:hover {display: block !important;}' +
     '#logo {padding: 0px 10px !important;height: 48px;line-height: 48px;background-color: transparent !important;} #logo img {height:31px} ' +
@@ -70,14 +71,18 @@ function spyInsert () {
     // add the new tag for the timestamp of the post
     tempEl.find('.location .whoWhere').prepend('<span class="meta">' + time + '</span>');
 
+    if (window.spymod_insertHasRunOnce) {
+       if (!document.hasFocus()) {
+         tempEl.addClass('postNew');
+       }
+    }
+      
     // don't return anything if the post isn't to be shown anyway
     return ignore ? null : tempEl;
   }
 
   // for the intial run, we want to avoid the complex timeout loop prepending multiple posts
   if (!window.spymod_insertHasRunOnce) {
-      window.spymod_insertHasRunOnce = true;
-
       var fragment = spyItems.reverse().map(function (post) {
         post = modPost(post);
         return post ? '<div class="itemWrapper firstBatch" style="display:block">' + post[0].outerHTML + '</div>': '';
@@ -92,6 +97,8 @@ function spyInsert () {
 
       // intialise the posts so that it skips the normal path below
       spyItems = [];
+      
+      window.spymod_insertHasRunOnce = true;
   }
 
   if (spyItems.length) {
@@ -264,6 +271,10 @@ function _runSuperMod() {
         opt.prop('selected', true);
     });
 
+    $('#spyContents').on('mouseover', '.discussionListItem', function () {
+        $(this).removeClass('postNew'); 
+    });
+    
     $('#spyContents').off('click').on('click', '.discussionListItem, a', function(e) {
         $('#messageoption').text('- switch between your opened threads -');
         $('#startermessage').fadeOut()
