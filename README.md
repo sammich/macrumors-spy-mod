@@ -2,11 +2,11 @@
 
 First off, I love the new forums that Arn and the team have put up. Vast improvement. And I'm also thankful that the Spy wasn't a porting afterthought and left for later to be released.
 
-But I still have some suggestions that would make the Spy better. And most, if not all, of the suggestions are implemented in the attached UserScript newspy.user.js attached here.
+However, I have some suggestions that would make the Spy better. And most, if not all, of the suggestions are implemented in the attached UserScripts in this repository.
 
-The mod is made as the MR Spy was at 2015-07-09 0030 (AEST).
+The mod is made as the MR Spy was at 2015-07-10 0030 (AEST).
 
-I 'built' and tested it on Chrome via the Tampermonkey extension. There's no reason why other UserScript extensions or Firefox won't be able to handle this either.
+I 'built' and tested it on Chrome via the Tampermonkey extension with basic tests on Firefox and Safari 8 and 9.
 
 #### Updates ####
 
