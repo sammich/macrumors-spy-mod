@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.8.4
+// @version      0.8.5
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -407,7 +407,7 @@ function _runSuperMod() {
 
     $('#newVersionMessage .versionTarget').click(function () {
         var el = $(this);
-        el.text('Restart after updating.');
+        el.text('Refresh after updating.');
         el.parent().next().fadeOut();
     });
 }
