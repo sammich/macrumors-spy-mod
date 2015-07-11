@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.8.2
+// @version      0.8.3
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -20,7 +20,6 @@ var styl = document.createElement('style');
 
 var fadeInTimeMs = 300;
 styl.textContent =
-
     '#refreshFrame { padding: 2px 3px;position: relative;top: 1px; }' +
     '#newVersionMessage { background-color: #eee;font-size:90%;position:absolute; bottom:0; right:0; margin:1em; padding: 4px 7px; border:1px solid #999; border-radius:3px;z-index:10000; }' +
     '.postNew .meta:before {content: \'new \';color: rgb(0, 136, 238);font-size: smaller;font-weight: bold;position: relative;bottom: 2px;}' +
@@ -38,6 +37,7 @@ styl.textContent =
     //'#header .navigation .primary .navTabs .navTab, #header .navigation .primary .navTabs .navLink, #header .navigation .primary .navTabs {height:40px;}' +
     '#header, #header *{ box-shadow: none !important; } #header .navigation { margin:0 } #header .navigation .navTab { height:40px; }' +
     '#header .funbox, #header .brand, #header .mobile{display:none !important;}.sectionMain{border:none}' +
+    'body { overflow: hidden !important; } ' +
     'body > * {display:none;}' +
     '#mainview {border-top: 1px solid rgb(147, 166, 194);display: flex;display: -webkit-flex; overflow: hidden;}#spymod_col1 {width: 30%;min-width:250px;max-width:400px;border-right: 1px solid rgb(147, 166, 194);}#spymod_col2 {flex: auto;-webkit-flex: auto;}#mainview .header {height: 30px;width: 100%;background-color: #c6d5e8;border-bottom: 1px solid rgb(147, 166, 194);}#threadselector { width: 90%;}#threadframe { display:none;border: none;width: 100%;height: 100%;}' +
     '#spyContents .location .major {font-size: smaller;}' +
@@ -208,6 +208,8 @@ function _runSpyMod() {
 function _runSuperMod() {
     var sourceBase = 'https://github.com/sammich/macrumors-spy-mod';
 
+    window.spymod_alertPopup = $('#AlertsMenu_Counter').closest('li').data('XenForo.PopupMenu');
+
     window.spymod_cachedWindowLoc = window.location + '';
     window.getSpyItems = function(){$.ajax({url:window.spymod_cachedWindowLoc+"feed?last="+spyHighestId+"&r="+Math.random(),type:"GET",success:function(a){a=$.makeArray(a.feed);$.each(a,function(a,c){$.each(c,function(a,b){0<b.length&&(spyItems.push(b),spyHighestId=Math.max(parseInt(a),spyHighestId))})});spyInsert()}})}
 
@@ -239,6 +241,11 @@ function _runSuperMod() {
         $('body').click(function() {
             window.top.spymod_userpopups.hide()
         });
+        var count = $('#AlertsMenu_Counter .Total').text();
+        window.top.$('#AlertsMenu_Counter .Total').text(count);
+        window.top.$('#AlertsMenu_Counter').toggleClass('Zero', count === '0');
+
+        window.top.spymod_alertPopup.resetLoader();
     }
 
     window.spymod_history = [];
