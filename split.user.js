@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.8.3
+// @version      0.8.4
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -241,12 +241,28 @@ function _runSuperMod() {
         $('body').click(function() {
             window.top.spymod_userpopups.hide()
         });
+
+/*
+        var count = +($('#AlertsMenu_Counter .Total').text());
+        var topCount = +(window.top.$('#AlertsMenu_Counter .Total'));
+
+        if (isNaN(count) && !isFinite(count)) count = 0;
+        if (isNaN(count) && !isFinite(count)) topCount = 0;
+
+        topCount.text(count + topCount);
+        window.top.$('#AlertsMenu_Counter').toggleClass('Zero', count + topCount === 0);
+*/
+
         var count = $('#AlertsMenu_Counter .Total').text();
         window.top.$('#AlertsMenu_Counter .Total').text(count);
         window.top.$('#AlertsMenu_Counter').toggleClass('Zero', count === '0');
-
         window.top.spymod_alertPopup.resetLoader();
     }
+
+    // reset the loader every so often
+    setInterval(function () {
+        window.spymod_alertPopup.resetLoader();
+    }, 5000);
 
     window.spymod_history = [];
 
