@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.9.1
+// @version      0.9.2
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -314,7 +314,7 @@ function _run_buildSplitView() {
       'New version available. ' +
       '<b>' +
         '<a href="" class="doNotCapture versionTarget">Update now!</a>' +
-      '</b>' +
+      '</b> ' +
       '<a href="#" class="doNotCapture nothanks" style="font-size:smaller;text-decoration:none">No thanks.</a>' +
     '</div>'
   );
@@ -431,7 +431,7 @@ function _run_buildSplitView() {
 
     // hide the initial message
     window.startermessage.style.display = 'none';
-	
+
 	frameLoadMessage.removeClass('fade-in');
 	setTimeout(function () {
 	  frameLoadMessage.hide();
@@ -475,7 +475,7 @@ function _run_buildSplitView() {
     // swap frames
     frame.swap();
   }
-  
+
   frame.loader.onload = onFrameLoad;
   frame.viewer.onload = onFrameLoad;
 
@@ -502,8 +502,8 @@ function _run_buildSplitView() {
     opt[0].origin_href = el.href
     //opt[0].origin_postnum = target.href.match(/\/(.+)\//)[1];
 
-	frameLoadMessage.find('span').text('Loading: ' + threadname);
-	
+    frameLoadMessage.find('span').text('Loading: ' + threadname);
+
     $('#threadselector').append(opt);
     opt.prop('selected', true);
 
@@ -516,11 +516,11 @@ function _run_buildSplitView() {
     // can't refresh if the page hasn't loaded
     refreshControl.prop('disabled', true);
 
-	frameLoadMessage.show()
-	setTimeout(function () {
-	  frameLoadMessage.addClass('fade-in');
-	}, 10);
-	
+    frameLoadMessage.show()
+  	setTimeout(function () {
+  	  frameLoadMessage.addClass('fade-in');
+  	}, 10);
+
     window.openthread = url;
     frame.loader.src = url;
   }
@@ -618,7 +618,7 @@ if (GM_xmlhttpRequest) {
   // do some version checking
   GM_xmlhttpRequest({
     method: 'GET',
-    url: 'https://github.com/sammich/macrumors-spy-mod/raw/master/split.version.json',
+    url: 'https://github.com/sammich/macrumors-spy-mod/raw/master/split.version.json?_rand=' + new Date(),
     onload: function(response) {
       var versionInfo = JSON.parse(response.responseText);
       var newVersion = +(versionInfo.version.replace('.', ''))
