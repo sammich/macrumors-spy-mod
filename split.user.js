@@ -516,7 +516,10 @@ function _run_buildSplitView() {
     // can't refresh if the page hasn't loaded
     refreshControl.prop('disabled', true);
 
-	frameLoadMessage.show().addClass('fade-in');
+	frameLoadMessage.show()
+	setTimeout(function () {
+	  frameLoadMessage.addClass('fade-in');
+	}, 10);
 	
     window.openthread = url;
     frame.loader.src = url;
