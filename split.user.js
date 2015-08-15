@@ -429,14 +429,19 @@ function _run_buildSplitView() {
 
   // when the frame is loaded, do something...
   function onFrameLoad() {
+    if (!frame.loader.modTriggeredPageLoad) {
+  	  return;
+  	}
+
+  	frame.loader.modTriggeredPageLoad = false;
 
     // hide the initial message
     window.startermessage.style.display = 'none';
 
-	frameLoadMessage.removeClass('fade-in');
-	setTimeout(function () {
-	  frameLoadMessage.hide();
-	}, 300);
+    frameLoadMessage.removeClass('fade-in');
+    setTimeout(function () {
+      frameLoadMessage.hide();
+    }, 300);
 
     // only available when it's loaded
     refreshControl.prop('disabled', false);
@@ -523,6 +528,7 @@ function _run_buildSplitView() {
   	}, 10);
 
     window.openthread = url;
+    frame.loader.modTriggeredPageLoad = true;
     frame.loader.src = url;
   }
 
