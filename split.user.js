@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.9.2
+// @version      0.9.3
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -194,6 +194,7 @@ function _run_spymod() {
 
   // get current logged in username
   window.spymod_username = $('#header .accountUsername').text();
+  window.originalSpyUrl = window.location.href;
 
   $('#spyContents').after(
 
@@ -596,6 +597,10 @@ function _run_buildSplitView() {
     var el = $(this);
     el.text('Refresh after updating.');
     el.parent().next().fadeOut();
+
+    setTimeout(function () {
+      el[0].href = window.originalSpyUrl;
+	  });
   });
 }
 
@@ -618,7 +623,7 @@ if (GM_xmlhttpRequest) {
   // do some version checking
   GM_xmlhttpRequest({
     method: 'GET',
-    url: 'https://github.com/sammich/macrumors-spy-mod/raw/master/split.version.json?_rand=' + new Date(),
+    url: 'https://github.com/sammich/macrumors-spy-mod/raw/master/split.version.json?_rand=' + Date.now(),
     onload: function(response) {
       var versionInfo = JSON.parse(response.responseText);
       var newVersion = +(versionInfo.version.replace('.', ''))
