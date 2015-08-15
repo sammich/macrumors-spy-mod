@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.9.4
+// @version      0.9.5
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -314,7 +314,7 @@ function _run_buildSplitView() {
     '<div id="newVersionMessage">' +
       'New version available. ' +
       '<b>' +
-        '<a href="" class="doNotCapture versionTarget">Update now!</a>' +
+        '<a href="" class="doNotCapture versionTarget" target="_blank">Update now!</a>' +
       '</b> ' +
       '<a href="#" class="doNotCapture nothanks" style="font-size:smaller;text-decoration:none">No thanks.</a>' +
     '</div>'
