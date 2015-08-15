@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.9.3
+// @version      0.9.4
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
