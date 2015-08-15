@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.9.5
+// @version      0.9.6
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -216,8 +216,8 @@ function _run_spymod() {
       '<br><br><span>' +
         '<input type="checkbox" id="spymod_optOutAnonymousTracking"> ' +
         '<label for="spymod_optOutAnonymousTracking">Opt-out of anonymous tracking</label><br>' +
-        'This mod anonymises your username and sends it to a server to see how many users are using it.' +
-      '<span>' +
+        '<span style="font-size:smaller">This mod anonymises your username and sends it to a server to see how many users are using it.</span>' +
+      '</span>' +
     '</div>'
   )
 
@@ -372,6 +372,21 @@ function _run_buildSplitView() {
         window.top.spymod_userpopups.hide()
     });
 
+    // on the main forum page, the responsive grid plugin doesn't kick in for some reason
+    // this was an interval before, which works with the commented code
+    // also note that this would also run on pages that don't need it
+    // only forums.macrumors.com seems to require this
+    var timer = setTimeout(function() {
+			try {
+			  uix.initFunc()
+			  /*
+			  if ($('#forums').hasClass('audentio_grid_running')) {
+				  clearInterval(blah);
+			  }
+			  */
+			} catch(e) {}
+  	}, 50);
+
 	  /*
     var count = +($('#AlertsMenu_Counter .Total').text());
     var topCount = +(window.top.$('#AlertsMenu_Counter .Total'));
@@ -416,15 +431,14 @@ function _run_buildSplitView() {
 
       $(v).removeClass('fade-in');
       setTimeout(function () {
-        $(v).hide()
+        $(v).hide();
+        frame.loader.src = '';
       }, 300);
 
       $(l).show()
       setTimeout(function () {
         $(l).addClass('fade-in');
       }, 10);
-
-      window.blah = l;
   };
 
   // when the frame is loaded, do something...
@@ -528,6 +542,7 @@ function _run_buildSplitView() {
   	}, 10);
 
     window.openthread = url;
+
     frame.loader.modTriggeredPageLoad = true;
     frame.loader.src = url;
   }
