@@ -75,7 +75,8 @@ styl.textContent =
   "#spymod_col2 .header { text-align: center; line-height: 28px; }" +
   "#threadselector { width: 85%; }" +
   "#threadbox { position: relative; margin-left: 0px; }" +
-  ".display-frame { display: none; width: 100%; height: 100%; border: none; position:absolute; top: 0; }" +
+  ".display-frame { width: 100%; height: 100%; border: none; position:absolute; top: 0; }" +
+  ".offscreen { position: absolute; left: -999em; } " +
   /* button */
   "#spymod_col2 .header button { padding: 2px 3px; position: relative; top: 1px; }" +
   /* toast */
@@ -315,8 +316,8 @@ function _run_buildSplitView() {
         '<div id="threadbox">' +
           '<div id="startermessage">To start, click a thread to the left.</div>' +
 	      '<div id="frame-loading-message" class="fade-target-300"><span>Loading...</span></div>' +
-          '<iframe id="visible-frame" class="display-frame fade-target-300" src="" frameborder="0"></iframe>' +
-          '<iframe id="loader-frame" class="display-frame fade-target-300" src="" frameborder="0"></iframe>' +
+          '<iframe id="visible-frame" class="display-frame" src="" frameborder="0"></iframe>' +
+          '<iframe id="loader-frame" class="display-frame" src="" frameborder="0"></iframe>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -449,21 +450,21 @@ function _run_buildSplitView() {
 
       $(v).removeClass('fade-in');
       setTimeout(function () {
-        $(v).hide();
+        $(v).addClass('offscreen');
         frame.loader.src = '';
       }, 300);
 
-      $(l).show()
+      $(l).show().removeClass('offscreen').addClass('fade-target-300');
       setTimeout(function () {
         $(l).addClass('fade-in');
       }, 10);
+      setTimeout(function () {
+        $(l).show().removeClass('fade-target-300');
+      }, 300);
   };
 
   // when the frame is loaded, do something...
   function onFrameLoad() {
-
-    //console.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> frame loaded [loader]', frame.loader.contentWindow.location.href)
-    //console.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> frame loaded [viewer]', frame.viewer.contentWindow.location.href)
 
     // hide the initial message
     window.startermessage.style.display = 'none';
@@ -567,7 +568,7 @@ function _run_buildSplitView() {
 
   function loadUrlIntoFrame(url) {
     frame.active = frame.loader;
-    frame.viewer.style.display = 'block';
+    //frame.viewer.style.display = 'block';
 
     // can't refresh if the page hasn't loaded
     refreshControl.add(popFrameControl).prop('disabled', true);

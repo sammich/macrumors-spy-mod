@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.9.6
+// @version      0.9.7
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -43,14 +43,13 @@ styl.textContent =
   ".sectionMain { border: none }" +
   ".discussionListItem { border-left: none !important; border-right: none !important }" +
   ".discussionListItem:hover { background-color: #F7FBFD; cursor: pointer; }" +
-  ".discussionListItem .listBlock { display: block; width: 100%; box-sizing: border-box; border-right: none; }" +
+  ".discussionListItem .listBlock { display: block; width: 100%; box-sizing: border-box; border-right: none; " +
+                                  " vertical-align: top !important; padding: 3px 7px; }" +
   ".itemWrapper.firstBatch { visibility: hidden; opacity: 0; -webkit-transition: opacity 300ms ease-out; -moz-transition: opacity 300ms ease-out; -o-transition: opacity 300ms ease-out; transition: opacity 300ms ease-out; }" +
   ".itemWrapper.show { opacity: 1; visibility: visible; }" +
-  ".discussionListItem .prefix { position: relative; top: -1px; }" +
-  ".discussionListItem .listBlock { vertical-align: top !important; padding: 5px 10px; }" +
+  ".discussionListItem .prefix { position: relative; top: -1px; padding: 0 3px; }" +
   ".whoWhere { padding-bottom: 0; }" +
   ".location .major { font-size: smaller; }" +
-  ".listBlock.info { padding: 5px 10px; }" +
   ".listBlock.info .whoWhere { padding: 0; }" +
   "@media (max-width: 610px) { .discussionListItem .listBlock { border-right: none; } }" +
   "@media (max-width: 520px) { .discussionList .info > div { padding: 5px 5px 5px 8px !important; } }" +
@@ -58,10 +57,14 @@ styl.textContent =
   ".loggedInUserPost { background-color: rgb(242, 250, 237) !important; }" +
   /* feint text in top corner */
   ".meta { position: relative; float: right; padding-right: 9px; color: #999; font-size: smaller; }" +
-  ".meta:after { position: absolute; top: -6px; right: -5px; content: '›'; font-size: 20px; }" +
+  ".meta:after { position: absolute; top: -6px; right: -2px; content: '›'; font-size: 20px; }" +
+
+  /* smaller thread title and poster username */
+  ".whoWhere > dt > a, .whoWhere > a { font-size: 13px; } "+
+
   /* ignore subforums */
   "#spymod_optionsArea { padding: 3px; }" +
-  "#spymod_optionsArea textarea { width: 100%; margin-top: 5px; box-sizing: border-box; border-radius: 4px; border: 1px solid rgb(198, 207, 220); padding: 3px; }" +
+  "#spymod_optionsArea textarea { width: 100%; margin-top: 5px; box-sizing: border-box; border-radius: 4px; border: 1px solid rgb(198, 207, 220); padding: 3px; background-color: #eee; }" +
   "#spymod_optionsArea textarea:focus { outline: none; }" +
   "#spymod_optionsArea span { margin-left: 0; color: rgb(115, 126, 136); font-size: 12px; }" +
   /* split view structure and contents */
@@ -70,11 +73,12 @@ styl.textContent =
   "#spymod_col1 { width: 27%; min-width: 220px; max-width: 400px; border-right: 1px solid rgb(147, 166, 194); }" +
   "#spymod_col2 { flex: auto; -webkit-flex: auto; }" +
   "#spymod_col2 .header { text-align: center; line-height: 28px; }" +
-  "#threadselector { width: 90%; }" +
+  "#threadselector { width: 85%; }" +
   "#threadbox { position: relative; margin-left: 0px; }" +
-  ".display-frame { display: none; width: 100%; height: 100%; border: none; position:absolute; top: 0; }" +
+  ".display-frame { width: 100%; height: 100%; border: none; position:absolute; top: 0; }" +
+  ".offscreen { position: absolute; left: -999em; } " +
   /* button */
-  "#refreshFrame { padding: 2px 3px; position: relative; top: 1px; }" +
+  "#spymod_col2 .header button { padding: 2px 3px; position: relative; top: 1px; }" +
   /* toast */
   "#newVersionMessage { position: absolute; right: 0; bottom: 0; margin: 1em; padding: 4px 7px; z-index: 10000; border: 1px solid #999; border-radius: 3px; background-color: #eee; font-size: 90%; }" +
   /* no loaded frame message */
@@ -203,6 +207,13 @@ function _run_spymod() {
       '<span>Ignore Forums (separate with semi-colons):</span>' +
       '<textarea placeholder="Forum 1;Forum 2"></textarea>' +
 
+      '<span style="font-weight: bold;display: block;margin-bottom: 10px;">' +
+        'Note: this feature has been disabled. Forum ignoring ' +
+        '<a href="http://forums.macrumors.com/account/ignored-forums" style="text-decoration: underline;" title="Forums You Ignore">' +
+          'is now configured here' +
+        '</a>.' +
+      '</span>' +
+
       // self-attribution
       '<span>This mod was created by <a href="http://forums.macrumors.com/members/sammich.84938/">sammich</a>.<br>' +
       'You can read more about this mod <a class="doNotCapture" target="_blank" href="https://github.com/sammich/macrumors-spy-mod">here</a>.<br>' +
@@ -299,13 +310,14 @@ function _run_buildSplitView() {
           '<select id="threadselector">' +
             '<option id="messageoption" disabled>- select a thread to begin -</option>' +
           '</select> ' +
-          '<button id="refreshFrame" disabled>Refresh</button>' +
+          '<button id="refreshFrame" disabled>Refresh</button> ' +
+          '<button id="pop-frame" disabled>+</button>' +
         '</div>' +
         '<div id="threadbox">' +
           '<div id="startermessage">To start, click a thread to the left.</div>' +
 	      '<div id="frame-loading-message" class="fade-target-300"><span>Loading...</span></div>' +
-          '<iframe id="visible-frame" class="display-frame fade-target-300" src="" frameborder="0"></iframe>' +
-          '<iframe id="loader-frame" class="display-frame fade-target-300" src="" frameborder="0"></iframe>' +
+          '<iframe id="visible-frame" class="display-frame" src="" frameborder="0"></iframe>' +
+          '<iframe id="loader-frame" class="display-frame" src="" frameborder="0"></iframe>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -321,6 +333,7 @@ function _run_buildSplitView() {
   );
 
   var refreshControl = $('#refreshFrame'),
+    popFrameControl = $('#pop-frame'),
     secondary_header = $('.secondary').addClass('fade-target-300'),
 	frameLoadMessage = $('#frame-loading-message');
 
@@ -423,6 +436,12 @@ function _run_buildSplitView() {
     }
   });
   frame.swap = function () {
+
+    // swap frames if swap is needed
+    if (frame.active !== frame.loader) {
+      return;
+    }
+
     var v = frame.viewer,
       l = frame.loader;
 
@@ -431,23 +450,21 @@ function _run_buildSplitView() {
 
       $(v).removeClass('fade-in');
       setTimeout(function () {
-        $(v).hide();
+        $(v).addClass('offscreen');
         frame.loader.src = '';
       }, 300);
 
-      $(l).show()
+      $(l).show().removeClass('offscreen').addClass('fade-target-300');
       setTimeout(function () {
         $(l).addClass('fade-in');
       }, 10);
+      setTimeout(function () {
+        $(l).show().removeClass('fade-target-300');
+      }, 300);
   };
 
   // when the frame is loaded, do something...
   function onFrameLoad() {
-    if (!frame.loader.modTriggeredPageLoad) {
-  	  return;
-  	}
-
-  	frame.loader.modTriggeredPageLoad = false;
 
     // hide the initial message
     window.startermessage.style.display = 'none';
@@ -458,20 +475,22 @@ function _run_buildSplitView() {
     }, 300);
 
     // only available when it's loaded
-    refreshControl.prop('disabled', false);
+    refreshControl.add(popFrameControl).prop('disabled', false);
 
     // pull the title from the inner frame and update the current option text to match it
     var opt = $('#threadselector').find(':selected');
-    var title = frame.loader.contentDocument.title;
-    opt.text(title);
 
-    window.openthread = frame.loader.contentWindow.location.href;
+    try {
+      window.openthread = frame.active.contentWindow.location.href;
+      var title = frame.active.contentDocument.title;
+      opt.text(title);
+    } catch (e) {
+      window.openthread = frame.active.src;
+    }
 
     // push the state so we can use the browser back to view a previous thread
     // this is a little buggy when hashes are followed inside the inner frame
-    if (window.spymod_poppingStateUrl != window.openthread) {
-      //console.info('pushing state', window.openthread)
-
+    if (!window.openthread && window.spymod_poppingStateUrl != window.openthread) {
       window.history.pushState(null, null, window.openthread);
     }
 
@@ -482,28 +501,45 @@ function _run_buildSplitView() {
     opt[0].origin_href = window.openthread
     opt[0].threadname = title
 
-    // inject some CSS into the inner page to remove headers and footers
-    var styl = document.createElement('style');
-    styl.textContent = '#uix_wrapper, .sharePage, .breadBoxBottom, .funbox, footer, .similarThreads  { display:none; }  body {  background: none !important;}'
-    frame.loader.contentDocument.body.appendChild(styl);
+    try {
+      // inject some CSS into the inner page to remove headers and footers
+      var styl = document.createElement('style');
+      styl.textContent = '#uix_wrapper, .sharePage, .breadBoxBottom, .funbox, footer, .similarThreads  { display:none; }  body {  background: none !important;}'
+      frame.active.contentDocument.body.appendChild(styl);
 
-    // inject a function into the page to be run
-    var script = document.createElement('script');
-    script.textContent = ';(' + runInFrame.toString() + ')()';
-    frame.loader.contentDocument.body.appendChild(script);
+      // inject a function into the page to be run
+      var script = document.createElement('script');
+      script.textContent = ';(' + runInFrame.toString() + ')()';
+      frame.active.contentDocument.body.appendChild(script);
+    } catch (e) {
+      // don't do anything, cross origin
+    }
 
-    // swap frames
     frame.swap();
   }
 
+  frame.active = null;
   frame.loader.onload = onFrameLoad;
   frame.viewer.onload = onFrameLoad;
 
   // refresh the frame when the button is click, but only when the src is defined
-  refreshControl.click(function() {
-    var url = frame.getAttribute('src');
+  refreshControl.click(function () {
+    var url = frame.viewer.getAttribute('src');
     if (url) {
-      frame.src = url;
+      frameLoadMessage.show().find('span').text('Refreshing...');
+    	setTimeout(function () {
+    	  frameLoadMessage.addClass('fade-in');
+    	}, 10);
+
+      frame.active = frame.viewer;
+      frame.viewer.src = url;
+    }
+  });
+
+  // button will open the current active frame in a new tab/window
+  popFrameControl.click(function () {
+    if (frame.active && frame.active.src) {
+      window.open(frame.active.src, '_blank');
     }
   });
 
@@ -516,13 +552,13 @@ function _run_buildSplitView() {
 
     loadUrlIntoFrame(el.href);
 
-    var threadname = el.textContent;
+    var threadname = el.getAttribute('title') || el.textContent;
     var opt = $('<option>'+threadname+'</option>')
     opt[0].threadname = threadname;
     opt[0].origin_href = el.href
     //opt[0].origin_postnum = target.href.match(/\/(.+)\//)[1];
 
-    frameLoadMessage.find('span').text('Loading: ' + threadname);
+    frameLoadMessage.find('span').text('Loading: ' + threadname || 'unknown page');
 
     $('#threadselector').append(opt);
     opt.prop('selected', true);
@@ -531,10 +567,11 @@ function _run_buildSplitView() {
   }
 
   function loadUrlIntoFrame(url) {
-    frame.viewer.style.display = 'block';
+    frame.active = frame.loader;
+    //frame.viewer.style.display = 'block';
 
     // can't refresh if the page hasn't loaded
-    refreshControl.prop('disabled', true);
+    refreshControl.add(popFrameControl).prop('disabled', true);
 
     frameLoadMessage.show()
   	setTimeout(function () {
