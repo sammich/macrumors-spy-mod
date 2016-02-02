@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
 // @namespace    http://forums.macrumors.com/spy/
-// @version      0.9.7
+// @version      0.9.8
 // @author       sammich
 // @match        http://forums.macrumors.com/spy/
 // ==/UserScript==
@@ -62,11 +62,7 @@ styl.textContent =
   /* smaller thread title and poster username */
   ".whoWhere > dt > a, .whoWhere > a { font-size: 13px; } "+
 
-  /* ignore subforums */
-  "#spymod_optionsArea { padding: 3px; }" +
-  "#spymod_optionsArea textarea { width: 100%; margin-top: 5px; box-sizing: border-box; border-radius: 4px; border: 1px solid rgb(198, 207, 220); padding: 3px; background-color: #eee; }" +
-  "#spymod_optionsArea textarea:focus { outline: none; }" +
-  "#spymod_optionsArea span { margin-left: 0; color: rgb(115, 126, 136); font-size: 12px; }" +
+  "#spymod_optionsArea {padding: 2px; } #spymod_optionsArea span { margin-left: 0; color: rgb(115, 126, 136); font-size: 12px; }" +
   /* split view structure and contents */
   "#mainview { display: flex; display: -webkit-flex; overflow: hidden; border-top: 1px solid rgb(147, 166, 194); }" +
   "#mainview .header { height: 30px; width: 100%; background-color: #c6d5e8; border-bottom: 1px solid rgb(147, 166, 194); }" +
@@ -116,9 +112,6 @@ function spyInsert() {
     // get the post user so we can highlight the current user's posts
     var user = tempEl.find('.location .username').text();
 
-    // set the ignore status
-    var ignore = window.spymod_ignoreForums.indexOf(forum) > -1;
-
     // if the post is a new thread, add a tag to the post
     if (event === 'New Thread') {
       tempEl.find('.info .whoWhere a').prepend('<span class="prefix prefixGreen">+</span> ')
@@ -140,7 +133,7 @@ function spyInsert() {
     }
 
     // don't return anything if the post isn't to be shown anyway
-    return ignore ? null : tempEl;
+    return tempEl;
   }
 
   // for the intial run, we want to avoid the complex timeout loop prepending multiple posts
@@ -204,77 +197,17 @@ function _run_spymod() {
 
     // ignore forums input
     '<div id="spymod_optionsArea">' +
-      '<span>Ignore Forums (separate with semi-colons):</span>' +
-      '<textarea placeholder="Forum 1;Forum 2"></textarea>' +
-
-      '<span style="font-weight: bold;display: block;margin-bottom: 10px;">' +
-        'Note: this feature has been disabled. Forum ignoring ' +
-        '<a href="http://forums.macrumors.com/account/ignored-forums" style="text-decoration: underline;" title="Forums You Ignore">' +
-          'is now configured here' +
-        '</a>.' +
-      '</span>' +
 
       // self-attribution
-      '<span>This mod was created by <a href="http://forums.macrumors.com/members/sammich.84938/">sammich</a>.<br>' +
+      '<br><span>This mod was created by <a href="http://forums.macrumors.com/members/sammich.84938/">sammich</a>.<br>' +
       'You can read more about this mod <a class="doNotCapture" target="_blank" href="https://github.com/sammich/macrumors-spy-mod">here</a>.<br>' +
 
       // version info
       'Current version: <span id="spymod_currentVersion"></span>. ' +
       '<a id="spymod_newVersionAvailable" class="doNotCapture" style="display:none">Update avaiilable.</a>' +
       '</span>' +
-
-      // opt out of tracking
-      '<br><br><span>' +
-        '<input type="checkbox" id="spymod_optOutAnonymousTracking"> ' +
-        '<label for="spymod_optOutAnonymousTracking">Opt-out of anonymous tracking</label><br>' +
-        '<span style="font-size:smaller">This mod anonymises your username and sends it to a server to see how many users are using it.</span>' +
-      '</span>' +
     '</div>'
-  )
-
-  $('#spymod_optOutAnonymousTracking').change(function () {
-    localStorage.setItem('spymod_optOutAnonymousTracking', this.checked)
-  }).prop('checked', localStorage.getItem('spymod_optOutAnonymousTracking') === 'true')
-
-  // setup ignore forum feature                                  get rid of this later
-  var ignored = localStorage.getItem('_spymod_ignoredForums') || localStorage.getItem('_mod_ignoredForums') || '';
-  window.spymod_ignoreForums = ignored.split(';');
-
-  $('#spymod_optionsArea textarea')
-  .val(window.spymod_ignoreForums.join(';') + ';')
-  .on('paste change', function(e) {
-    var el = this;
-
-    // skip a beat because the paste event will otherwise give you the value before the paste
-    setTimeout(function() {
-      var ignore = el.value.split(';');
-
-      // remove any too short values like consecutive semi-colons
-      for (var i = 0; i < ignore.length; i++) {
-        if (ignore[i].length < 2) {
-          ignore.splice(i--, 1);
-        } else {
-          ignore[i] = ignore[i].trim();
-        }
-      }
-
-      // save
-      localStorage.setItem('_spymod_ignoredForums', ignore.join(';'));
-
-      // set global
-      window.spymod_ignoreForums = ignore;
-
-      // set display
-      el.value = window.spymod_ignoreForums.join(';') + ';';
-
-      // update spy
-      $('.itemWrapper .location .major').each(function() {
-        var el = $(this);
-
-        el.closest('.itemWrapper').toggle(!window.spymod_ignoreForums.indexOf(el.text()) > -1);
-      });
-    });
-  });
+  );
 }
 
 // add the split view behaviour
@@ -391,7 +324,7 @@ function _run_buildSplitView() {
     // only forums.macrumors.com seems to require this
     var timer = setTimeout(function() {
 			try {
-			  uix.initFunc()
+			  //uix.initFunc()
 			  /*
 			  if ($('#forums').hasClass('audentio_grid_running')) {
 				  clearInterval(blah);
@@ -504,7 +437,7 @@ function _run_buildSplitView() {
     try {
       // inject some CSS into the inner page to remove headers and footers
       var styl = document.createElement('style');
-      styl.textContent = '#uix_wrapper, .sharePage, .breadBoxBottom, .funbox, footer, .similarThreads  { display:none; }  body {  background: none !important;}'
+      styl.textContent = '#header .brand, #header .navigation, .sharePage, .breadBoxBottom, .funbox, footer, .similarThreads  { display:none; }  body {  background: none !important;}'
       frame.active.contentDocument.body.appendChild(styl);
 
       // inject a function into the page to be run
@@ -714,7 +647,7 @@ if (GM_xmlhttpRequest) {
   });
 
   // do some innocent anonymous user logging
-  if (you && localStorage.getItem('spymod_optOutAnonymousTracking') !== 'true') {
+  if (you) {
     setTimeout(function() {
       GM_xmlhttpRequest({
         method: "GET",
