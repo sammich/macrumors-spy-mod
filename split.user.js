@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         Split-view Macrumors Spy
-// @namespace    http://forums.macrumors.com/spy/
-// @version      0.9.8
+// @namespace    https://forums.macrumors.com/spy/
+// @version      0.9.9
 // @author       sammich
-// @match        http://forums.macrumors.com/spy/
+// @match        https://forums.macrumors.com/spy/
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 /*
@@ -34,8 +35,9 @@ styl.textContent =
   "#header, #header * { box-shadow: none !important; }" +
   "#header .navigation { margin: 0; }" +
   //"#header .secondary { opacity: 0.9; -webkit-transition: opacity 300ms ease-out; -moz-transition: opacity 300ms ease-out; -o-transition: opacity 300ms ease-out; transition: opacity 300ms ease-out; }" +
-  "#header .secondary:hover { opacity: 1; }" +
-
+  "#header .secondary:hover { opacity: 1; } " +
+  ".mainContent { margin: 0 !important; } " +
+  
   ".fade-target-300 { display: none; opacity: 0; -webkit-transition: opacity 300ms ease-out; -moz-transition: opacity 300ms ease-out; -o-transition: opacity 300ms ease-out; transition: opacity 300ms ease-out; }" +
   ".fade-in { opacity: 1; }" +
   ".fade-in-90 { opacity: 0.9; }" +
@@ -85,6 +87,7 @@ styl.textContent =
   "#loader-frame { opacity: 0; }";
 
 // inject the style tag into our host page
+styl.id = 'splitviewmod';
 document.body.appendChild(styl);
 
 // hashes a string
@@ -596,7 +599,7 @@ function _run_buildSplitView() {
 }
 
 try {
-  var you = document.querySelector('#header .accountUsername').textContent
+  var you = document.querySelector('#header .accountUsername').textContent;
 } catch (e) {}
 
 var __hoverIntent = '!function(e){"use strict";"function"==typeof define&&define.amd?define(["jquery"],e):jQuery&&e(jQuery)}(function(e){"use strict";var t,n,o={interval:100,sensitivity:6,timeout:0},i=0,r=function(e){t=e.pageX,n=e.pageY},u=function(e,o,i,v){return Math.sqrt((i.pX-t)*(i.pX-t)+(i.pY-n)*(i.pY-n))<v.sensitivity?(o.off("mousemove.hoverIntent"+i.namespace,r),delete i.timeoutId,i.isActive=!0,delete i.pX,delete i.pY,v.over.apply(o[0],[e])):(i.pX=t,i.pY=n,i.timeoutId=setTimeout(function(){u(e,o,i,v)},v.interval),void 0)},v=function(e,t,n,o){return delete t.data("hoverIntent")[n.id],o.apply(t[0],[e])};e.fn.hoverIntent=function(t,n,s){var a=i++,d=e.extend({},o);d=e.isPlainObject(t)?e.extend(d,t):e.isFunction(n)?e.extend(d,{over:t,out:n,selector:s}):e.extend(d,{over:t,out:t,selector:n});var m=function(t){var n=e.extend({},t),o=e(this),i=o.data("hoverIntent");i||o.data("hoverIntent",i={});var s=i[a];s||(i[a]=s={id:a}),s.timeoutId&&(s.timeoutId=clearTimeout(s.timeoutId));var m=s.namespace=".hoverIntent"+a;if("mouseenter"===t.type){if(s.isActive)return;s.pX=n.pageX,s.pY=n.pageY,o.on("mousemove.hoverIntent"+m,r),s.timeoutId=setTimeout(function(){u(n,o,s,d)},d.interval)}else{if(!s.isActive)return;o.off("mousemove.hoverIntent"+m,r),s.timeoutId=setTimeout(function(){v(n,o,s,d.out)},d.timeout)}};return this.on({"mouseenter.hoverIntent":m,"mouseleave.hoverIntent":m},d.selector)}});';
@@ -608,6 +611,7 @@ document.body.appendChild(script);
 //
 // Greasemonkey Dependant code
 //
+
 if (GM_xmlhttpRequest) {
   document.getElementById('spymod_currentVersion').textContent = GM_info.script.version;
 
@@ -617,8 +621,8 @@ if (GM_xmlhttpRequest) {
     url: 'https://github.com/sammich/macrumors-spy-mod/raw/master/split.version.json?_rand=' + Date.now(),
     onload: function(response) {
       var versionInfo = JSON.parse(response.responseText);
-      var newVersion = +(versionInfo.version.replace('.', ''))
-      var currentVersion = +(GM_info.script.version.replace('.', ''))
+      var newVersion = +(versionInfo.version.replace('.', ''));
+      var currentVersion = +(GM_info.script.version.replace('.', ''));
 
       if (localStorage.getItem('spymod_ignoreVersion') === versionInfo.version) {
         console.log('Ignoring version ' + versionInfo.version);
@@ -637,11 +641,11 @@ if (GM_xmlhttpRequest) {
 
         localStorage.setItem('spymod_latestVersion', versionInfo.version);
 
-        var newVersion = document.getElementById('spymod_newVersionAvailable');
+        newVersion = document.getElementById('spymod_newVersionAvailable');
 
         newVersion.textContent = 'Update available (' + versionInfo.version + ')';
-        newVersion.style.display = ''
-        newVersion.href = versionInfo.url
+        newVersion.style.display = '';
+        newVersion.href = versionInfo.url;
       }
     }
   });
