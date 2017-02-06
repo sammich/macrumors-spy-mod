@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Opinionated Improvement to MR Spy
-// @namespace    http://forums.macrumors.com/spy/
-// @version      0.10
+// @namespace    https://forums.macrumors.com/spy/
+// @version      0.11
 // @author       sammich
-// @match        http://forums.macrumors.com/spy/
+// @match        https://forums.macrumors.com/spy/
 // ==/UserScript==
 
 /* 
@@ -181,7 +181,6 @@ function _runSpyMod() {
 }
 
 function _runSuperMod() {
-    debugger;
     $('body').append('<div id="mainview"><div id="spymod_col1"><div class="header">asdasd</div></div><div id="spymod_col1"><div class="header"><select name="" id="threadselector"></select></div></div><div id="threadbox"><iframe src="" frameborder="0" id="threadframe"></iframe></div></div>');
 }
 
